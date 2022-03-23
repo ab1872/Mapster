@@ -4,13 +4,6 @@
     <string name="menu_camera">Record</string>
     <string name="menu_whereami">Where am I?</string>
     <string name="menu_hallview">Hall view</string>
-    <!--<item android:id="@+id/action_search"
-    android:title="@string/menu_search"
-    android:icon="@drawable/ic_search" />
-<item android:id="@+id/action_settings"
-    android:title="@string/menu_settings"
-    android:icon="@drawable/ic_add" />
-<item android:id="@+id/action_navigation"
-    android:title="@string/menu_navigation"
-    android:icon="@drawable/ic_action_navigation_menu" /> -->
+
+    <string name="view_desc">Test</string>
 </resources>
