@@ -2,25 +2,37 @@ package com.example.map;
 
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
-import android.widget.CheckBox;
+import android.widget.ImageView;
 
 public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
-        /*
-                android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:background="#FFF9C4"
-        app:layout_constraintBottom_toTopOf="@+id/navigation"
-        app:layout_constraintTop_toTopOf="parent"
-
-
-
-         */
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        ImageView img = findViewById(R.id.map_view);
+        img.setImageResource(R.drawable.ic_hallview);
+        img.setContentDescription(getResources().getString(R.string.app_name));
+
+        MapPicture map = new MapPicture(5);
+        img.setImageDrawable(map);
+
+        Thread thread = new Thread(new Runnable() {
+
+            @Override
+            public void run() {
+                try  {
+                    OutdoorMapData mapdata = new OutdoorMapData();
+                    mapdata.GetData(51.249,7.148,51.251,7.152);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        thread.start();
+
     }
 }
 

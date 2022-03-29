@@ -3,6 +3,5 @@
     <string name="menu_camera">Record</string>
     <string name="menu_whereami">Where am I?</string>
     <string name="menu_hallview">Hall view</string>
-
     <string name="view_desc">Test</string>
 </resources>
