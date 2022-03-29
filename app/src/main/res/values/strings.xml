@@ -1,6 +1,5 @@
 <resources>
     <string name="app_name">Map</string>
-    <string name="button_text">Button owo</string>
     <string name="menu_camera">Record</string>
     <string name="menu_whereami">Where am I?</string>
     <string name="menu_hallview">Hall view</string>
