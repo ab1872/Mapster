@@ -15,8 +15,7 @@ public class MainActivity extends AppCompatActivity {
         img.setImageResource(R.drawable.ic_hallview);
         img.setContentDescription(getResources().getString(R.string.app_name));
 
-        MapPicture map = new MapPicture(5);
-        img.setImageDrawable(map);
+        //img.setImageDrawable(map);
 
         Thread thread = new Thread(new Runnable() {
 
