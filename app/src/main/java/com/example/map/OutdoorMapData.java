@@ -1,12 +1,16 @@
 package com.example.map;
 
 import android.util.Log;
+import android.util.Xml;
 
 import org.xml.sax.InputSource;
 import org.xml.sax.XMLReader;
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -15,21 +19,26 @@ import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
 public class OutdoorMapData {
 
+    private static final String ns = null;
+
     public void GetData(double south, double west, double north, double east) {
         try {
             HashMap<String, String> params = new HashMap();
-
-            params.put("data","<query type=\"node\"><has-kv k=\"name\" v=\"Bristol\"/></query><around radius=\"10\"/><print/>");
-                    //"<osm-script timeout=\"900\" element-limit=\"1073\"><bbox-query s=\"51.15\" w=\"7.0\" n=\"51.35\" e=\"7.3\"/><print/></osm-script>");//"<osm-script timeout=\"900\" element-limit=\"107\"><bbox-query s=\"" + String.format("%.3f",south) + "\" w=\"" + String.format("%.3f",west) + "\" n=\""+ String.format("%.3f",north) +"\" e=\""+ String.format("%.3f",east) +"\"/><print/></osm-script>");
-// http://overpass-api.de/query_form.html
-            // https://wiki.openstreetmap.org/wiki/Overpass_API#Public_Overpass_API_instances
+            String queryText = "<union>"
+            + "<bbox-query s=\"" + String.format("%.5f",south)  + "\" w=\"" +  String.format("%.5f",west) + "\" n=\"" +  String.format("%.5f",north)  + "\" e=\"" + String.format("%.5f",east)  + "\"/>"
+            + "<recurse type=\"up\"/>"
+            + "</union>"
+            + "<print mode=\"meta\"/>";
+            params.put("data",queryText);
 
             // SOURCE OF THIS HTTP-SENDING CODE @ https://riptutorial.com/android/example/12202/sending-an-http-post-request-with-parameters
 
@@ -70,22 +79,24 @@ public class OutdoorMapData {
             wr.close();
 
             try {
-                InputStream in = new BufferedInputStream(conn.getInputStream());
+                /* InputStream in = new BufferedInputStream();
                 BufferedReader reader = new BufferedReader(new InputStreamReader(in));
                 StringBuilder result = new StringBuilder();
                 String line;
                 while ((line = reader.readLine()) != null) {
                     result.append(line);
                 }
-
-                Log.d("test", "result from server: " + result.toString());
+                new ByteArrayInputStream(result.toString().getBytes())
+                //Log.d("test", "result from server: " + result.toString().length());
+                */
+                parse(conn.getInputStream());
 
             } catch (IOException e) {
                 e.printStackTrace();
+            } catch (XmlPullParserException e) {
+                e.printStackTrace();
             } finally {
-                if (conn != null) {
-                    conn.disconnect();
-                }
+                conn.disconnect();
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -94,4 +105,53 @@ public class OutdoorMapData {
 
         // END CODE
     }
+
+    private List parse(InputStream in) throws XmlPullParserException, IOException {
+        try {
+            XmlPullParser parser = Xml.newPullParser();
+            parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false);
+            parser.setInput(in, null);
+            parser.nextTag();
+            return read(parser);
+        } finally {
+            in.close();
+        }
+    }
+
+    private List read(XmlPullParser parser) throws XmlPullParserException, IOException{
+        int count = 0;
+        while (parser.next() != XmlPullParser.END_TAG) {
+            if (parser.getEventType() != XmlPullParser.START_TAG) {
+                continue;
+            }
+            String name = parser.getName();
+            if (name.equals("node")) {
+                count += 1;
+            } else {
+                skip(parser);
+            }
+        }
+
+        Log.d("Map Output", "Counted " + count + " tags");
+        return new ArrayList();
+    }
+
+    private void skip(XmlPullParser parser) throws XmlPullParserException, IOException {
+        if (parser.getEventType() != XmlPullParser.START_TAG) {
+            throw new IllegalStateException();
+        }
+        int depth = 1;
+        while (depth != 0) {
+            switch (parser.next()) {
+                case XmlPullParser.END_TAG:
+                    depth--;
+                    break;
+                case XmlPullParser.START_TAG:
+                    depth++;
+                    break;
+            }
+        }
+    }
+
+    // Source for the XML parser code: https://developer.android.com/training/basics/network-ops/xml
 }

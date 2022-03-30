@@ -24,7 +24,7 @@ public class MainActivity extends AppCompatActivity {
             public void run() {
                 try  {
                     OutdoorMapData mapdata = new OutdoorMapData();
-                    mapdata.GetData(51.249,7.148,51.251,7.152);
+                    mapdata.GetData(51.249,7.148,51.2495,7.1485);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
