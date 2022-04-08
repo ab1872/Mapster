@@ -6,22 +6,37 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/navigation"
-        android:layout_width="match_parent"
-        android:layout_height="56dp"
-        android:layout_gravity="start"
-        android:layout_marginBottom="2dp"
-        app:menu="@menu/my_navigation_items"
-        app:layout_constraintBottom_toBottomOf="parent" />
-
     <ImageView
         android:id="@+id/map_view"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@id/navigation"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_launcher_background"
+        app:srcCompat="@drawable/ic_appbackground"
         tools:layout_editor_absoluteX="-6dp" />
+
+    <ImageButton
+        android:id="@+id/imageButton"
+        style="@style/Widget.AppCompat.ImageButton"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginBottom="16dp"
+        app:layout_constraintBottom_toBottomOf="@+id/map_view"
+        app:layout_constraintStart_toStartOf="parent"
+        app:srcCompat="@drawable/ic_baseline_photo_camera_24"
+        tools:ignore="SpeakableTextPresentCheck" />
+
+    <ImageButton
+        android:id="@+id/imageButton2"
+        style="@style/Widget.AppCompat.ImageButton"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginBottom="16dp"
+        app:layout_constraintBottom_toBottomOf="@+id/map_view"
+        app:layout_constraintStart_toEndOf="@+id/imageButton"
+        app:srcCompat="@drawable/ic_baseline_pin_drop_24"
+        tools:ignore="SpeakableTextPresentCheck" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

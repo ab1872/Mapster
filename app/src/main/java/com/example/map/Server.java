@@ -1,5 +1,7 @@
 package com.example.map;
 
+import android.content.res.Resources;
+import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.util.Xml;
 
@@ -26,11 +28,17 @@ import java.util.List;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
-public class OutdoorMapData {
+public class Server {
 
     private static final String ns = null;
 
-    public void GetData(double south, double west, double north, double east) {
+    public Drawable Download(long num) {
+        String a = "abc" + String.valueOf(num);
+        //return Drawable.createFromXml(Resources.getSystem(), );
+        return Drawable.createFromPath("abc");
+    }
+
+    public void AskForBuildings(double south, double west, double north, double east) {
         try {
             HashMap<String, String> params = new HashMap();
             String queryText = "<union>"
