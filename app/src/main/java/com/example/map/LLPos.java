@@ -43,8 +43,8 @@ public class LLPos {
         double longitudeD = longitude - LLgot.longitude;
         double latitudeD = latitude - LLgot.latitude;
 
-        int screenX = (int)(longitudeD * 76407 * 19.2); // dp
-        int screenY = (int)(latitudeD * 111162  * 19.2); // dp
+        double screenX = (longitudeD * 76407 * 19.2); // dp
+        double screenY = (latitudeD * 111162  * 19.2); // dp
 
         ScreenPos ScreenPosNew = new ScreenPos(screenX, screenY);
         return ScreenPosNew;

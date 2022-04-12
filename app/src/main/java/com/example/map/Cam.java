@@ -37,11 +37,4 @@ public class Cam {
         SetPos(LLPg);
         InitVelocity();
     }
-
-    public Cam(ScreenPos ScreenPg) {
-        SetPos(ScreenPg);
-        InitVelocity();
-    }
-
-
 }

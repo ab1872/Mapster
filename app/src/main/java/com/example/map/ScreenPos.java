@@ -8,9 +8,9 @@ public class ScreenPos {
 
      */
 
-    private int X, Y;
+    private double X, Y;
 
-    public ScreenPos(int Xg, int Yg) {
+    public ScreenPos(double Xg, double Yg) {
         X = Xg;
         Y = Yg;
     }

@@ -4,7 +4,7 @@ package com.example.map;
 import java.util.LinkedList;
 
 public class Floor {
-    private LinkedList<Path> PathList;
+    private LinkedList<Seg> PathList;
     private long FloorID, BuildingID;
     private int UndrawRadius;
 

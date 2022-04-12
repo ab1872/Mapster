@@ -6,22 +6,29 @@ import android.location.Location;
 import android.os.Bundle;
 import android.widget.ImageView;
 
+import java.util.LinkedList;
 import java.util.Vector;
 
 public class MainActivity extends AppCompatActivity {
 
-    ImageView img;
+    //ImageView img;
+
+    Cam camera;
+    LinkedList<Floor> DownloadedFloors;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        img = findViewById(R.id.map_view);
-        img.setContentDescription(getResources().getString(R.string.app_name));
+        camera = new Cam(new LLPos(66.4619, 46.5653));
+
+        //img = findViewById(R.id.map_view);
+        //img.setContentDescription(getResources().getString(R.string.app_name));
+
+
 
         Thread thread = new Thread(new Runnable() {
-
             @Override
             public void run() {
                 try  {
