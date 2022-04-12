@@ -7,17 +7,16 @@ import android.graphics.Paint;
 import android.util.AttributeSet;
 import android.view.View;
 
-class IndoorMapView extends View {
-    Paint paint;
-
-    public IndoorMapView(Context context, AttributeSet attrs) {
+public class CustomView extends View {
+    Paint paint = new Paint();
+    public CustomView(Context context, AttributeSet attrs){
         super(context, attrs);
         init();
     }
 
     private void init() {
-        paint.setColor(Color.RED);
-        paint.setStrokeWidth(3);
+        paint.setColor(Color.BLACK);
+        paint.setStrokeWidth(6);
         paint.setAntiAlias(true);
         paint.setDither(true);
         paint.setStrokeJoin(Paint.Join.ROUND);
@@ -28,7 +27,7 @@ class IndoorMapView extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        canvas.drawLine(0, 0, 55, 55, paint);
+        canvas.drawLine(0, 0, 1505, 555, paint);
 
     }
 }
