@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.location.Location;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.widget.ImageView;
 
 import java.util.LinkedList;
@@ -11,7 +12,6 @@ import java.util.Vector;
 
 public class MainActivity extends AppCompatActivity {
 
-    //ImageView img;
 
     Cam camera;
     LinkedList<Floor> DownloadedFloors;
@@ -25,8 +25,6 @@ public class MainActivity extends AppCompatActivity {
 
         //img = findViewById(R.id.map_view);
         //img.setContentDescription(getResources().getString(R.string.app_name));
-
-
 
         Thread thread = new Thread(new Runnable() {
             @Override

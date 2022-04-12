@@ -5,10 +5,15 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.AttributeSet;
+import android.view.MotionEvent;
 import android.view.View;
+
+import java.util.Random;
 
 public class CustomView extends View {
     Paint paint = new Paint();
+
+    Random rand = new Random();
     public CustomView(Context context, AttributeSet attrs){
         super(context, attrs);
         init();
@@ -27,7 +32,13 @@ public class CustomView extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        canvas.drawLine(0, 0, 1505, 555, paint);
+        canvas.drawLine(0, 0, rand.nextInt(500), 555, paint);
+        //canvas.drawARGB(255, 255,0,0);
+    }
 
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        postInvalidate();
+        return super.onTouchEvent(event);
     }
 }
