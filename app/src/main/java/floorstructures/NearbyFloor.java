@@ -44,7 +44,7 @@ public class NearbyFloor {
             @Override
             public void run() {
                 try  {
-                    String recstring = Server.Download(FloorID);
+                    String recstring = Server.Download(new double[]{FloorID});
                     Floor newfloor = new Floor(camera,FloorID,BuildingID,center,recstring);
                     DownloadedFloors.add(newfloor);
                 } catch (Exception e) {
