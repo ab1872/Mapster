@@ -23,6 +23,7 @@ public class CustomView extends View {
     LinkedList<Floor> DownloadedFloors;
 
     LLPos LastAskForBuildingsPos;
+    boolean HasAskForBuildings = false;
 
     public CustomView(Context context, AttributeSet attrs){
         super(context, attrs);
@@ -40,15 +41,33 @@ public class CustomView extends View {
         paint.setStrokeCap(Paint.Cap.ROUND);
         paint.setStyle(Paint.Style.STROKE);
 
-        /* Initialize the Camera object */
-        camera = new Cam(new LLPos(66.4619, 46.5653));
+        /* Initialize the Camera object at New Brunswick */
+        camera = new Cam(new LLPos(66.4619, 46.5653), 62);
 
         /* Initialize the Last Asked For Buildings Position */
         LastAskForBuildingsPos = camera.GetLL();
 
         /* Initialize the Floors in view */
         DownloadedFloors = new LinkedList<Floor>();
-        DownloadedFloors.add(new Floor(camera,1,1,"242"));
+        //DownloadedFloors.add(...)
+
+        /* Display the map initially */
+        HasSettled();
+    }
+
+    /* METHOD to get GPS pos */
+
+    /* Called when the scroll flywheel settles */
+    private void HasSettled(){
+        /* If it's the first time asking for buildings */
+        if(HasAskForBuildings == false){
+            HasAskForBuildings = true;
+        }
+        else{
+
+        }
+
+        LastAskForBuildingsPos = camera.GetLL();
     }
 
     @Override
@@ -68,6 +87,6 @@ public class CustomView extends View {
         // On move: set camera position.
 
         // On settled: 1) clean up floors (for all floors)
-        // 2) If displacement from last asked.... Ask for floors (async) download when received, postInvalidate()
+        // 2) If displacement from last asked.... or has ask Ask for floors (async) download when received, postInvalidate()
     }
 }

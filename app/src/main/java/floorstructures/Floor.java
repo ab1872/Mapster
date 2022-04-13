@@ -17,13 +17,14 @@ public class Floor {
     private Cam camera;
     private long FloorID, BuildingID;
     private double UndrawRadius;
+    private LLPos center;
 
-    public Floor(Cam camerag, long FloorIDg, long BuildingIDg, String floortextg){
+    public Floor(Cam camerag, long FloorIDg, long BuildingIDg, LLPos centerg, String floortextg){
         camera = camerag;
         floortext = floortextg;
         FloorID = FloorIDg;
         BuildingID = BuildingIDg;
-
+        center = centerg;
         // Start parsing...
 
         PathList = Floor.textToSeglist(floortextg, camera);
@@ -136,6 +137,22 @@ public class Floor {
 
     private double GetUndrawRadius(){
         return UndrawRadius;
+    }
+
+    private boolean CheckUndrawRadius() {
+        ScreenPos cp = camera.GetScreenP();
+        ScreenPos fp = center.ToScreen(camera);
+
+        double cpt = cp.GetTop(camera);
+        double cpl = cp.GetLeft(camera);
+
+        double fpt = fp.GetTop(camera);
+        double fpl = fp.GetLeft(camera);
+
+        double tdif = fpt-cpt;
+        double ldif = fpl-cpl;
+
+        return Math.sqrt(tdif*tdif + ldif*ldif)> UndrawRadius;
     }
 
     public String GetText(){

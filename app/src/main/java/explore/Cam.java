@@ -4,9 +4,16 @@ import worldscreenpositions.LLPos;
 import worldscreenpositions.ScreenPos;
 
 public class Cam {
+
+    /* Todo: implement altitude */
+    /* Method to get the building is inside */
+    /* Altitude <----> Floor (for current building) */
+
+
+
     private LLPos LLP;
     private ScreenPos ScreenP;
-    //private ScreenPos Velocity;
+
     private double width, height;
 
     public void InformScreenDim(double widthg, double heightg){
@@ -33,10 +40,6 @@ public class Cam {
 
     private int ZoomLevel; // optional
 
-    //public void InitVelocity(){
-    //    Velocity = new ScreenPos(0,0);
-   // }
-
     public void SetPos(LLPos LLPg){
         LLP = LLPg;
         ScreenP = LLPg.ToScreen(this);
@@ -47,9 +50,6 @@ public class Cam {
         LLP = ScreenPg.ToLL(this);
     }
 
-    //public void SetVel(ScreenPos Vel){
-     //   Velocity = Vel;
-   // }
 
     public LLPos GetLL(){
         return LLP;
@@ -59,8 +59,7 @@ public class Cam {
         return ScreenP;
     }
 
-    public Cam(LLPos LLPg){
+    public Cam(LLPos LLPg, double Altitude){
         SetPos(LLPg);
-        //InitVelocity();
     }
 }

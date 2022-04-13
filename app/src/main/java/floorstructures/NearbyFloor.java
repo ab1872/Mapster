@@ -45,7 +45,7 @@ public class NearbyFloor {
             public void run() {
                 try  {
                     String recstring = Server.Download(FloorID);
-                    Floor newfloor = new Floor(camera,FloorID,BuildingID,recstring);
+                    Floor newfloor = new Floor(camera,FloorID,BuildingID,center,recstring);
                     DownloadedFloors.add(newfloor);
                 } catch (Exception e) {
                     e.printStackTrace();
