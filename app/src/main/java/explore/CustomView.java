@@ -1,4 +1,4 @@
-package com.example.map;
+package explore;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -32,13 +32,20 @@ public class CustomView extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
+        // For all floors:
+        // Draw floors:
         canvas.drawLine(0, 0, rand.nextInt(500), 555, paint);
-        //canvas.drawARGB(255, 255,0,0);
+
     }
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         postInvalidate();
         return super.onTouchEvent(event);
+
+        // On move: set camera position.
+
+        // On settled: 1) clean up floors (for all floors)
+        // 2) If displacement from last asked.... Ask for floors (async) download when received, postInvalidate()
     }
 }

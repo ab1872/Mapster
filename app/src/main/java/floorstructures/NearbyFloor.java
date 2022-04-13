@@ -1,4 +1,4 @@
-package com.example.map;
+package floorstructures;
 
 public class NearbyFloor {
 }

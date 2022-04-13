@@ -1,5 +1,7 @@
-package com.example.map;
+package floorstructures;
 
+
+import worldscreenpositions.Seg;
 
 import java.util.LinkedList;
 
@@ -7,7 +9,11 @@ public class Floor {
     private LinkedList<Seg> PathList;
     private long FloorID, BuildingID;
     private int UndrawRadius;
-
+// Method to convert "to text".
+    // Static method "from text";
+    // Method to plot;
+    // Method to check outbounds
+    // Method to Draw(Canvas, Paint) --> invokes for all Seg.
 }
 
 /*

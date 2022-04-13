@@ -1,15 +1,18 @@
-package com.example.map;
+package explore;
+
+import worldscreenpositions.LLPos;
+import worldscreenpositions.ScreenPos;
 
 public class Cam {
     private LLPos LLP;
     private ScreenPos ScreenP;
-    private ScreenPos Velocity;
+    //private ScreenPos Velocity;
 
     private int ZoomLevel; // optional
 
-    private void InitVelocity(){
-        Velocity = new ScreenPos(0,0);
-    }
+    //public void InitVelocity(){
+    //    Velocity = new ScreenPos(0,0);
+   // }
 
     public void SetPos(LLPos LLPg){
         LLP = LLPg;
@@ -21,9 +24,9 @@ public class Cam {
         LLP = ScreenPg.ToLL(this);
     }
 
-    public void SetVel(ScreenPos Vel){
-        Velocity = Vel;
-    }
+    //public void SetVel(ScreenPos Vel){
+     //   Velocity = Vel;
+   // }
 
     public LLPos GetLL(){
         return LLP;
@@ -35,6 +38,6 @@ public class Cam {
 
     public Cam(LLPos LLPg){
         SetPos(LLPg);
-        InitVelocity();
+        //InitVelocity();
     }
 }

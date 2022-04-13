@@ -1,4 +1,4 @@
-package com.example.map;
+package server;
 
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;

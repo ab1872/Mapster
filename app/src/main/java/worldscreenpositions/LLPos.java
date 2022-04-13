@@ -1,4 +1,6 @@
-package com.example.map;
+package worldscreenpositions;
+
+import explore.Cam;
 
 public class LLPos {
     private  double longitude, latitude;
