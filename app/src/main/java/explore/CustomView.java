@@ -8,18 +8,30 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 
+import java.util.LinkedList;
 import java.util.Random;
 
-public class CustomView extends View {
-    Paint paint = new Paint();
+import floorstructures.Floor;
+import server.Server;
+import worldscreenpositions.LLPos;
+import worldscreenpositions.Seg;
 
-    Random rand = new Random();
+public class CustomView extends View {
+    Paint paint;
+    Cam camera;
+    Server server;
+    LinkedList<Floor> DownloadedFloors;
+
+    LLPos LastAskForBuildingsPos;
+
     public CustomView(Context context, AttributeSet attrs){
         super(context, attrs);
         init();
     }
 
     private void init() {
+        /* Initialize the Paint */
+        paint = new Paint();
         paint.setColor(Color.BLACK);
         paint.setStrokeWidth(6);
         paint.setAntiAlias(true);
@@ -27,15 +39,25 @@ public class CustomView extends View {
         paint.setStrokeJoin(Paint.Join.ROUND);
         paint.setStrokeCap(Paint.Cap.ROUND);
         paint.setStyle(Paint.Style.STROKE);
+
+        /* Initialize the Camera object */
+        camera = new Cam(new LLPos(66.4619, 46.5653));
+
+        /* Initialize the Last Asked For Buildings Position */
+        LastAskForBuildingsPos = camera.GetLL();
+
+        /* Initialize the Floors in view */
+        DownloadedFloors = new LinkedList<Floor>();
+        DownloadedFloors.add(new Floor(camera,1,1,"242"));
     }
 
     @Override
-    protected void onDraw(Canvas canvas) {
+    protected void onDraw(Canvas canvas) { /* Done */
         super.onDraw(canvas);
-        // For all floors:
-        // Draw floors:
-        canvas.drawLine(0, 0, rand.nextInt(500), 555, paint);
-
+        /* For all floors, Draw it on canvas */
+        for(int i = 0; i < DownloadedFloors.size(); i++){
+            DownloadedFloors.get(i).Plot(canvas, paint);
+        }
     }
 
     @Override

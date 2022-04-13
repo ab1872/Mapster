@@ -17,6 +17,14 @@ public class ScreenPos {
         Y = Yg;
     }
 
+    public int GetTop(Cam camera){
+        return (int)(camera.getHalfWidth() - Y);
+    }
+
+    public int GetLeft(Cam camera){
+        return (int)(camera.getHalfWidth() + X);
+    }
+
     public LLPos ToLL(Cam camera){
         // cf. coefficients in LLPos.
 

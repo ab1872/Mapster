@@ -7,6 +7,29 @@ public class Cam {
     private LLPos LLP;
     private ScreenPos ScreenP;
     //private ScreenPos Velocity;
+    private double width, height;
+
+    public void InformScreenDim(double widthg, double heightg){
+        width = widthg;
+        height = heightg;
+    }
+
+    public double getWidth(){
+        return width;
+    }
+
+    public double getHeight(){
+        return height;
+    }
+
+    public double getHalfWidth(){
+        return width/2;
+    }
+
+    public double getHalfHeight(){
+        return height/2;
+    }
+
 
     private int ZoomLevel; // optional
 
