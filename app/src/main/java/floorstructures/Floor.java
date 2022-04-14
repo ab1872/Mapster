@@ -12,19 +12,21 @@ import worldscreenpositions.Seg;
 import java.util.LinkedList;
 
 public class Floor {
-    private String floortext;
-    private LinkedList<Seg> PathList;
-    private Cam camera;
-    private long FloorID, BuildingID;
+    private final String floortext;
+    private final LinkedList<Seg> PathList;
+    private final Cam camera;
+    private final long FloorID, BuildingID;
     private double UndrawRadius;
-    private LLPos center;
+    private final LLPos center;
+    private final double altitude;
 
-    public Floor(Cam camerag, long FloorIDg, long BuildingIDg, LLPos centerg, String floortextg){
+    public Floor(Cam camerag, long FloorIDg, long BuildingIDg, LLPos centerg, double altitudeg, String floortextg){
         camera = camerag;
         floortext = floortextg;
         FloorID = FloorIDg;
         BuildingID = BuildingIDg;
         center = centerg;
+        altitude = altitudeg;
         // Start parsing...
 
         PathList = Floor.textToSeglist(floortextg, camera);
@@ -34,6 +36,9 @@ public class Floor {
         /* Set Undraw Radius */
         SetUndrawRadius();
     }
+
+
+    /* Todo: Store by segments instead of path. */
     public static LinkedList<Seg> textToSeglist(String floortext, Cam camera){
         String[] split1 = floortext.split(" ");
         LinkedList<Seg> PathList = new LinkedList<Seg>();

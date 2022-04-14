@@ -12,13 +12,15 @@ public class NearbyFloor {
     long BuildingID, FloorID;
 
     LLPos center;
+    double altitude;
     Cam camera;
 
-    public NearbyFloor(long BuildingIDg, long FloorIDg, LLPos centerg, Cam camerag){
+    public NearbyFloor(long BuildingIDg, long FloorIDg, LLPos centerg, double altitudeg, Cam camerag){
         BuildingID = BuildingIDg;
         FloorID = FloorIDg;
         center = centerg;
         camera = camerag;
+        altitude = altitudeg;
     }
 
     public boolean CheckInBounds(){
@@ -45,7 +47,7 @@ public class NearbyFloor {
             public void run() {
                 try  {
                     String recstring = Server.Download(new double[]{FloorID});
-                    Floor newfloor = new Floor(camera,FloorID,BuildingID,center,recstring);
+                    Floor newfloor = new Floor(camera,FloorID,BuildingID,center,altitude,recstring);
                     DownloadedFloors.add(newfloor);
                 } catch (Exception e) {
                     e.printStackTrace();

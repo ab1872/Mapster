@@ -5,6 +5,9 @@ import explore.Cam;
 public class LLPos {
     private  double longitude, latitude;
 
+    public String toString(){
+        return "Lon: " + longitude + " Lat: " + latitude;
+    }
 
     public LLPos(double longitudeg, double latitudeg){
         longitude = longitudeg;

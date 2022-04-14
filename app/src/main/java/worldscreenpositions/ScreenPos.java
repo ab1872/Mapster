@@ -17,6 +17,14 @@ public class ScreenPos {
         Y = Yg;
     }
 
+    public double GetX (){
+        return X;
+    }
+
+    public double GetY(){
+        return Y;
+    }
+
     public int GetTop(Cam camera){
         return (int)(camera.getHalfWidth() - Y);
     }
