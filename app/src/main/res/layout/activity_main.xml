@@ -13,7 +13,7 @@
         app:layout_constraintTop_toTopOf="parent"
         />
 
-    <ImageButton
+    <com.example.map.CamButton
         android:id="@+id/imageButton"
         style="@style/Widget.AppCompat.ImageButton"
         android:layout_width="50dp"

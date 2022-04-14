@@ -1,6 +1,4 @@
-package worldscreenpositions;
-
-import explore.Cam;
+package mapdisplayutil;
 
 public class LLPos {
     private  double longitude, latitude;
@@ -9,7 +7,7 @@ public class LLPos {
         return "Lon: " + longitude + " Lat: " + latitude;
     }
 
-    public LLPos(double longitudeg, double latitudeg){
+    public LLPos(double latitudeg, double longitudeg){
         longitude = longitudeg;
         latitude = latitudeg;
     }

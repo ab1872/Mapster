@@ -1,6 +1,4 @@
-package worldscreenpositions;
-
-import explore.Cam;
+package mapdisplayutil;
 
 public class ScreenPos {
     /*

@@ -1,13 +1,10 @@
 package explore;
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.ContextWrapper;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
@@ -15,23 +12,24 @@ import android.view.View;
 import com.example.map.MainActivity;
 
 import java.util.LinkedList;
-import java.util.Random;
 
 import floorstructures.Floor;
+import floorstructures.FloorList;
+import mapdisplayutil.PosMapping;
+import mapdisplayutil.ScreenParameters;
 import server.Server;
 import utilities.FindMainActivity;
-import worldscreenpositions.LLPos;
-import worldscreenpositions.ScreenPos;
-import worldscreenpositions.Seg;
+import mapdisplayutil.LLPos;
 
 public class CustomView extends View {
     MainActivity mainac;
 
     Paint paint;
-    Cam camera;
     Server server;
-    LinkedList<Floor> DownloadedFloors;
+    FloorList DownloadedFloors;
     Context ctx;
+
+    ScreenParameters viewDim;
 
     LLPos LastAskForBuildingsPos;
     boolean HasAskForBuildings = false;
@@ -45,7 +43,6 @@ public class CustomView extends View {
         /* Get the main activity */
         ctx = context;
         mainac = FindMainActivity.Find(context);
-        Log.i("Test",mainac.testString);
         /* Initialize the Paint */
         paint = new Paint();
         paint.setColor(Color.BLACK);
@@ -57,23 +54,23 @@ public class CustomView extends View {
         paint.setStyle(Paint.Style.STROKE);
 
         /* Initialize the Camera object at New Brunswick */
-        camera = new Cam(new LLPos(66.4619, 46.5653), 62);
-
+       // camera = new Cam(new LLPos(66.4619, 46.5653), 62);
+        viewDim = new ScreenParameters(new LLPos(66.4619, 46.5653), 62, 500, 500);
         /* Initialize the Last Asked For Buildings Position */
-        LastAskForBuildingsPos = camera.GetLL();
+        //LastAskForBuildingsPos = camera.GetLL();
 
         /* Initialize the Floors in view */
-        DownloadedFloors = new LinkedList<Floor>();
+        DownloadedFloors = new FloorList();
         //DownloadedFloors.add(...)
 
         /* Display the map initially */
-        HasSettled();
+        CheckRedownload();
     }
 
     /* METHOD to get GPS pos */
 
     /* Called when the scroll flywheel settles */
-    private void HasSettled(){
+    private void CheckRedownload(){
         /* If it's the first time asking for buildings */
         if(HasAskForBuildings == false){
             HasAskForBuildings = true;
@@ -81,15 +78,15 @@ public class CustomView extends View {
         else{
 
         }
-        LastAskForBuildingsPos = camera.GetLL();
+        //LastAskForBuildingsPos = camera.GetLL();
     }
 
     @Override
     protected void onDraw(Canvas canvas) { /* Done */
         super.onDraw(canvas);
-        /* For all floors, Draw it on canvas */
+        /* For all floors, IF current floor, Draw it on canvas */
         for(int i = 0; i < DownloadedFloors.size(); i++){
-            DownloadedFloors.get(i).Plot(canvas, paint);
+            DownloadedFloors.get(i).GetPathList().Plot(canvas, paint);
         }
     }
 
@@ -103,7 +100,7 @@ public class CustomView extends View {
         @Override
         public boolean onScroll(MotionEvent e1, MotionEvent e2,
                                 float distanceX, float distanceY) {
-            ScreenPos campos = camera.GetScreenP();
+            /*ScreenPos campos = camera.GetScreenP();
 
             double newY = campos.GetY() + distanceY;
             double newX = campos.GetX() - distanceX;
@@ -115,7 +112,7 @@ public class CustomView extends View {
             }
             //Log.i("Camera Pos", campos.ToLL(camera)+"");
 
-
+            */
             return true;
         }
     }

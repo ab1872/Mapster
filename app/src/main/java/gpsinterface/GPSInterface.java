@@ -2,7 +2,6 @@ package gpsinterface;
 
 import android.content.Context;
 import android.location.Location;
-import android.util.Log;
 
 import com.example.map.MainActivity;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -10,7 +9,7 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnSuccessListener;
 
 import utilities.FindMainActivity;
-import worldscreenpositions.LLPos;
+import mapdisplayutil.LLPos;
 
 public class GPSInterface {
 

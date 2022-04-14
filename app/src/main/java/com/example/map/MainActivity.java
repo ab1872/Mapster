@@ -12,30 +12,12 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 
-import com.example.map.R;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
-import com.google.android.gms.common.GooglePlayServicesUtil;
 
-import java.util.LinkedList;
-import java.util.Timer;
-import java.util.TimerTask;
-
-import explore.Cam;
-import floorstructures.Floor;
 import gpsinterface.GPSInterface;
-import worldscreenpositions.LLPos;
-
-import org.opencv.android.BaseLoaderCallback;
-import org.opencv.android.CameraBridgeViewBase.CvCameraViewFrame;
-import org.opencv.android.LoaderCallbackInterface;
-import org.opencv.android.OpenCVLoader;
-import org.opencv.core.Mat;
-import org.opencv.android.CameraBridgeViewBase;
-import org.opencv.android.CameraBridgeViewBase.CvCameraViewListener2;
 
 public class MainActivity extends AppCompatActivity {
-    public final String testString = "Abcd";
     private GPSInterface gpsInterface;
 
     // Define the permission callback.

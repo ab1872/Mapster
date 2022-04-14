@@ -2,10 +2,9 @@ package floorstructures;
 
 import java.util.LinkedList;
 
-import explore.Cam;
 import server.Server;
-import worldscreenpositions.LLPos;
-import worldscreenpositions.ScreenPos;
+import mapdisplayutil.LLPos;
+import mapdisplayutil.ScreenPos;
 
 public class NearbyFloor {
 
