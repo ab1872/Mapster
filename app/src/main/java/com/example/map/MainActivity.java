@@ -26,8 +26,16 @@ import floorstructures.Floor;
 import gpsinterface.GPSInterface;
 import worldscreenpositions.LLPos;
 
+import org.opencv.android.BaseLoaderCallback;
+import org.opencv.android.CameraBridgeViewBase.CvCameraViewFrame;
+import org.opencv.android.LoaderCallbackInterface;
+import org.opencv.android.OpenCVLoader;
+import org.opencv.core.Mat;
+import org.opencv.android.CameraBridgeViewBase;
+import org.opencv.android.CameraBridgeViewBase.CvCameraViewListener2;
+
 public class MainActivity extends AppCompatActivity {
-    public final String testString = "Abd";
+    public final String testString = "Abcd";
     private GPSInterface gpsInterface;
 
     // Define the permission callback.
@@ -95,7 +103,5 @@ public class MainActivity extends AppCompatActivity {
         handler.removeCallbacks(runnable);
         super.onPause();
     }
-
-
 }
 
