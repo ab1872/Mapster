@@ -14,3 +14,7 @@ dependencyResolutionManagement {
 }
 rootProject.name = "Map"
 include ':app'
+include ':openCVLibrary343'
+include ':openCVLibrary343'
+include ':sdk'
+include ':openCVLibrary343'
