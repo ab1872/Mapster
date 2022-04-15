@@ -6,37 +6,32 @@ import mapdisplayutil.PathList;
 
 public class Floor {
     private final PathList pathList;
-    private final long FloorID, BuildingID;
+    private final String FloorID, BuildingID;
     private final LLPos center;
-    private final double altitude;
+    private final double UndrawRadius;
 
-    private double UndrawRadius;
-
-    public Floor(long FloorIDg, long BuildingIDg, LLPos centerg, double altitudeg, PathList plg){
-
+    public Floor(String FloorIDg, String BuildingIDg, PathList plg){
         FloorID = FloorIDg;
         BuildingID = BuildingIDg;
-        center = centerg;
-        altitude = altitudeg;
-        // Start parsing...
+        center = plg.getCenter();
         pathList = plg;
         UndrawRadius = 2 * plg.getMaxDiagonal();
     }
 
-    private double GetUndrawRadius(){
+    private double getUndrawRadius(){
         return UndrawRadius;
     }
 
 
-    public PathList GetPathList(){
+    public PathList getPathList(){
         return pathList;
     }
 
-    public long GetFloorID(){
+    public String getFloorID(){
         return FloorID;
     }
 
-    public long GetBuildingID(){
+    public String getBuildingID(){
         return BuildingID;
     }
 }

@@ -1,13 +1,6 @@
 package mapdisplayutil;
 
 public class ScreenPos {
-    /*
-    LL-.-> X()
-   |-> Y()
-   |-> ToScreen(cam)
-
-     */
-
     private double X, Y;
 
     public ScreenPos(double Xg, double Yg) {
@@ -23,25 +16,9 @@ public class ScreenPos {
         return Y;
     }
 
-    public int GetTop(Cam camera){
-        return (int)(camera.getHalfWidth() - Y);
+    @Override
+    public String toString(){
+        return GetX() + " " + GetY() + " (from center)";
     }
 
-    public int GetLeft(Cam camera){
-        return (int)(camera.getHalfWidth() + X);
-    }
-
-    public LLPos ToLL(Cam camera){
-        // cf. coefficients in LLPos.
-
-        ScreenPos Screengot = camera.GetScreenP();
-
-        double longitudeD = Screengot.X / (76407 * 19.2);
-        double latitudeD = Screengot.Y / (111162  * 19.2);
-
-        LLPos LLgot = camera.GetLL();
-
-        LLPos LLPosNew = new LLPos(longitudeD + LLgot.GetLongitude(), latitudeD + LLgot.GetLatitude());
-        return LLPosNew;
-    }
 }

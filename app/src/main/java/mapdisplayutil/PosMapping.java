@@ -1,25 +1,26 @@
 package mapdisplayutil;
 
+import android.util.Log;
+
 public class PosMapping {
-    private LLPos LLP;
-    private ScreenPos ScreenP;
+    private LLPos LLP; /* Absolute until updated */
+    /* Screen Pos is relative */
     private double altitude;
     private ScreenParameters screenPara;
 
-    public PosMapping(LLPos LLPg, double altitude, ScreenParameters screenPg) {
+    public PosMapping(LLPos LLPg, double altitude, ScreenParameters screenParag) {
+        screenPara = screenParag;
         update(LLPg);
-        screenPara = screenPg;
     }
 
-    public PosMapping(ScreenPos ScreenPg, double altitude, ScreenParameters screenPg){
+    public PosMapping(ScreenPos ScreenPg, double altitude, ScreenParameters screenParag){
+        screenPara = screenParag;
         update(ScreenPg);
-        screenPara = screenPg;
     }
 
+    /* Infer the LL from a screen location */
     public void update(ScreenPos ScreenPg){
         LLPos cameraLL = screenPara.getCameraLL();
-
-        ScreenP = ScreenPg;
 
         double longitudeD = ScreenPg.GetX() / (76407 * 19.2);
         double latitudeD = ScreenPg.GetY() / (111162  * 19.2);
@@ -27,23 +28,25 @@ public class PosMapping {
         LLP = new LLPos(longitudeD + cameraLL.GetLongitude(), latitudeD + cameraLL.GetLatitude());
     }
 
+    /* Update LL pos with same camera*/
     public void update(LLPos LLPg){
-        LLPos cameraLL = screenPara.getCameraLL();
         LLP = LLPg;
-        double longitudeD = LLPg.GetLongitude() - cameraLL.GetLongitude();
-        double latitudeD = LLPg.GetLatitude() - cameraLL.GetLatitude();
-
-        double screenX = (longitudeD * 76407 * 19.2); // dp
-        double screenY = (latitudeD * 111162  * 19.2); // dp
-
-        ScreenP = new ScreenPos(screenX, screenY);
     }
 
     public void updateCamera(ScreenParameters screenParag){ /* camera */
         screenPara = screenParag;
     }
 
+    /* Get projected Screen pos, without camera offset */
     public ScreenPos getScreenP(){
+        LLPos cameraLL = screenPara.getCameraLL();
+        double longitudeD = LLP.GetLongitude() - cameraLL.GetLongitude();
+        double latitudeD = LLP.GetLatitude() - cameraLL.GetLatitude();
+
+        double screenX = (longitudeD * 76407 * 19.2); // dp
+        double screenY = (latitudeD * 111162  * 19.2); // dp
+
+        ScreenPos ScreenP = new ScreenPos(screenX, screenY);
         return ScreenP;
     }
 
@@ -52,10 +55,12 @@ public class PosMapping {
     }
 
     public int getLeft(){
+        ScreenPos ScreenP = getScreenP();
         return (int)(screenPara.getCameraWidth()/2 + ScreenP.GetX());
     }
 
     public int getTop(){
+        ScreenPos ScreenP = getScreenP();
         return (int)(screenPara.getCameraHeight()/2 - ScreenP.GetY());
     }
 

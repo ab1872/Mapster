@@ -7,7 +7,7 @@ import mapdisplayutil.LLPos;
 import mapdisplayutil.ScreenPos;
 
 public class NearbyFloor {
-
+/*
     long BuildingID, FloorID;
 
     LLPos center;
@@ -55,7 +55,8 @@ public class NearbyFloor {
         });
 
         thread.start();
-    }
+    }*/
+
 }
 
 /*
