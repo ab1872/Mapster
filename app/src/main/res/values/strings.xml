@@ -2,6 +2,7 @@
     <string name="app_name">Map</string>
     <string name="menu_camera">Record</string>
     <string name="menu_whereami">Where am I?</string>
-    <string name="menu_hallview">Hall view</string>
-    <string name="view_desc">Test</string>
+    <string name="record_snapshot">Snapshot</string>
+    <string name="record_done">Done</string>
+    <string name="no_snapshots">No snapshots yet</string>
 </resources>

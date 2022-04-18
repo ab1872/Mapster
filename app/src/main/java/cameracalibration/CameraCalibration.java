@@ -4,6 +4,7 @@ import static org.opencv.core.CvType.CV_32FC4;
 
 import android.app.Activity;
 import android.content.Context;
+import android.hardware.Camera;
 import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CameraCharacteristics;
 import android.hardware.camera2.CameraManager;
@@ -12,37 +13,35 @@ import android.os.Build;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.TypedValue;
+import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 
 import org.opencv.core.Mat;
+import org.opencv.core.Size;
+
+import camerarecord.CameraViewActivity;
 
 public class CameraCalibration {
 
-    @RequiresApi(api = Build.VERSION_CODES.M)
-    public void getCameraMatrix(Activity activity){//int width, int height){
+    Camera camera;
+    Camera.Parameters cparam;
 
-        CameraManager manager = (CameraManager) activity.getSystemService(Context.CAMERA_SERVICE);
-        String[] idList = new String[0];
-        try {
-            idList = manager.getCameraIdList();
-
-        int maxCameraCnt = idList.length;
-
-            for (int index = 0; index < maxCameraCnt; index++) {
-                String cameraId = manager.getCameraIdList()[index];
-                CameraCharacteristics characteristics = manager.getCameraCharacteristics(cameraId);
-                float[] arr = characteristics.get(CameraCharacteristics.LENS_INTRINSIC_CALIBRATION);
-                Log.i("Camera " + index, "OK " + arr);
-            }
-        } catch (CameraAccessException e) {
-            e.printStackTrace();
-        }
-
-        //Mat K = Mat.zeros(4,4, CV_32FC4);
+    public float getFocalLength(CameraViewActivity activity){//}, int width, int height){
+        //Mat K = Mat.eye(4, 4, CV_32FC4);
 
 
-        //return new Mat();
+        //camera = Camera.open();
+        //cparam = camera.getParameters();
+        float f = 28;//mmToPx(cparam.getFocalLength(), activity);
+        //activity.printOut("Focal length: " + cparam.getFocalLength() + "mm, " + f + "px.");
+        /*K.put(0,0, f);
+        K.put(1,1,f);
+        K.put(0,2, width/2);
+        K.put(0,3, height/2);*/
+        //camera.release();
+
+        return mmToPx(f, activity);
     }
 
     public static float mmToPx(final float mm, final Context context)
