@@ -23,7 +23,7 @@ public class PosMapping {
         LLPos cameraLL = screenPara.getCameraLL();
 
         double longitudeD = ScreenPg.GetX() / (76407 * 19.2);
-        double latitudeD = ScreenPg.GetY() / (111162  * 19.2);
+        double latitudeD = ScreenPg.GetY() / (100000  * 19.2);
 
         LLP = new LLPos(longitudeD + cameraLL.GetLongitude(), latitudeD + cameraLL.GetLatitude());
     }
@@ -44,7 +44,7 @@ public class PosMapping {
         double latitudeD = LLP.GetLatitude() - cameraLL.GetLatitude();
 
         double screenX = (longitudeD * 76407 * 19.2); // dp
-        double screenY = (latitudeD * 111162  * 19.2); // dp
+        double screenY = (latitudeD * 100000  * 19.2); // dp
 
         ScreenPos ScreenP = new ScreenPos(screenX, screenY);
         return ScreenP;

@@ -91,7 +91,7 @@ public class CustomView extends View {
                                 float distanceX, float distanceY) {
            try {
                LLPos pos = viewDim.getCameraLL();
-               double newLatitude = pos.GetLatitude() - distanceY / (111162  * 19.2);
+               double newLatitude = pos.GetLatitude() - distanceY / (100000  * 19.2);
                double newLongitude = pos.GetLongitude() + distanceX / (76407 * 19.2);
 
                viewDim.updateLL(new LLPos(newLatitude, newLongitude));
