@@ -19,6 +19,9 @@ public class LinePath extends LinkedList<PosMapping> {
         }
     }
 
+    // Convex hull algorithm.
+    // Concave hull algorithm. Start from convex hull,
+
     @Override
     public String toString(){
         String buffer = "";

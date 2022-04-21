@@ -33,6 +33,7 @@ import org.opencv.core.Mat;
 import org.opencv.core.MatOfFloat;
 import org.opencv.core.MatOfFloat4;
 import org.opencv.core.MatOfInt;
+import org.opencv.core.Size;
 import org.opencv.engine.OpenCVEngineInterface;
 import org.opencv.videoio.VideoCapture;
 import org.opencv.videoio.Videoio;
@@ -48,7 +49,7 @@ public class CameraViewActivity extends Activity implements CameraBridgeViewBase
     private FrameRecorder fr;
     private Sfm sfm;
     private float focal;
-    public MatOfFloat K;
+    public Mat K;
 
     int mWidth, mHeight;
 
@@ -148,11 +149,11 @@ public class CameraViewActivity extends Activity implements CameraBridgeViewBase
             mWidth = width;
             mHeight = height;
 
-            K = new MatOfFloat();
-            K.fromArray(new float[]{focal,0,width/2,
+
+            K = new Mat(3,3,CvType.CV_64F);
+            K.put(0,0,new double[]{focal,0,width/2,
                     0,focal,height/2,
                     0,0    ,1});
-
         }
     }
 
