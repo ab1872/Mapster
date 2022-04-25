@@ -139,7 +139,7 @@ public class CameraViewActivity extends Activity implements CameraBridgeViewBase
     }
 
     public Mat onCameraFrame(CameraBridgeViewBase.CvCameraViewFrame inputFrame) {
-        Mat rgba = inputFrame.rgba();
+        Mat rgba = inputFrame.gray();
         fr.setLastFrame(rgba);
         return inputFrame.rgba();
     }
