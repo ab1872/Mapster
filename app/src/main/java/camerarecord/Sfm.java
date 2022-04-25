@@ -99,8 +99,8 @@ Function interface FindCameraMatrices: Ask for K and two images, returns P1 matr
         Core.SVDecomp(ff.E, w, u, vt, Core.DECOMP_SVD);
 
         /* ToDo: exhaust 4 possibilities */
-        //  u * W * vt
-        //Mat t = u.col(2);
+        //  u * W * vt is the first one
+
         w.put(0,0,new double[]{0,-1,0,1,0,0,0,0,1});
 
         Mat d = new Mat();
