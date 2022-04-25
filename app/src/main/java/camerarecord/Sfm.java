@@ -10,6 +10,7 @@ import com.google.android.gms.common.Feature;
 
 import org.opencv.calib3d.Calib3d;
 import org.opencv.core.Core;
+import org.opencv.core.CvType;
 import org.opencv.core.DMatch;
 import org.opencv.core.KeyPoint;
 import org.opencv.core.Mat;
@@ -30,6 +31,7 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Vector;
 
 public class Sfm {
 
@@ -73,26 +75,60 @@ Function interface FindCameraMatrices: Ask for K and two images, returns P1 matr
 
     // https://stackoverflow.com/questions/46153260/getting-error-while-using-findfundamentalmat-in-android-opencv-and-not-able-to-r
 
+    private static void mult(Mat a, Mat b, Mat r){
+        Core.gemm(a, b, 1, new Mat(), 0, r);
+    }
+
+
     public void startEngine(Mat K, LinkedList<Mat> frames){
         addMessage("Got ("+frames.size()+") frames as input.");
-        // Debugging K...
-        addMessage("Debugging K:");
-       //addMessage(Utils.debugMatFloat(K));
 
-        // extract matched features.
-        // PnP reconstruct
-        // refine
-
-        //org.opencv.calib3d.Calib3d.findFundamentalMat(.
-        //addMessage("Starting ORB feature detection.");
         addMessage("Finding and matching features.");
         foundFeatures ff = findFeatures(frames, K);
 
-        addMessage("Found fundamental matrix: ");
-        addMessage(ff.F.dump());
+        addMessage("Found essential matrix: ");
+        addMessage(ff.E.dump());
+
+        /* get SVD of Essential Matrix */
+        // https://answers.opencv.org/question/30824/decomposition-of-essential-matrix-leads-to-wrong-rotation-and-translation/
+
+        Mat w = new Mat(3,3, CvType.CV_64F);
+        Mat u = new Mat();
+        Mat vt = new Mat();
+
+        Core.SVDecomp(ff.E, w, u, vt, Core.DECOMP_SVD);
+
+        /* ToDo: exhaust 4 possibilities */
+        //  u * W * vt
+        //Mat t = u.col(2);
+        w.put(0,0,new double[]{0,-1,0,1,0,0,0,0,1});
+
+        Mat d = new Mat();
+        Mat R = new Mat();
+        mult(u, w, d);
+        mult(d, vt, R);
+
+        Mat t = u.col(2);
+
+
+        Mat P1 = new Mat(3,4,CvType.CV_64F);
+        /*
+            Concatenate to make P1. (test if hconcat works)
+
+           P1( R(0,0),R(0,1), R(0,2), t(0),
+                R(1,0),R(1,1), R(1,2), t(1),
+                R(2,0),R(2,1), R(2,2), t(2));
+        */
+        ArrayList<Mat> d2 = new ArrayList<>();
+        d2.add(R);
+        d2.add(t);
+        Core.hconcat(d2, P1);
     }
 
     //https://akshikawijesundara.medium.com/object-recognition-with-opencv-on-android-6435277ab285
+
+
+
 
     static class feature {
         Point3 worldPoint;
@@ -189,8 +225,9 @@ Function interface FindCameraMatrices: Ask for K and two images, returns P1 matr
                 Mat d = new Mat();
                 Mat E = new Mat();
                 //Code to multiply: gemm(matSrc1, matSrc2, 1, new Mat(), 0, matDest);
-                Core.gemm(K.t(), featureList.F, 1, new Mat(), 0, d);
-                Core.gemm(d, K, 1, new Mat(), 0, E);
+
+                mult(K.t(), featureList.F, d);
+                mult(d, K, E);
                 featureList.E = E;
             }
         }
@@ -199,6 +236,142 @@ Function interface FindCameraMatrices: Ask for K and two images, returns P1 matr
 
         return featureList;
     }
+
+    Mat LinearLSTTriangulation(Point3 u, Mat P, Point3 u1, Mat P1){
+        double[] p = new double[12];
+        P.get(0,0, p);
+
+        double[] p1 = new double[12];
+        P1.get(0,0,p1);
+
+        Mat A = new Mat(4, 3,CvType.CV_64F);
+        A.put(0,0,new double[]{
+                u.x*p[2*4 + 0]-p[0], u.x * p[2*4 + 1] - p[0*4 + 1], u.x * p[2*4 + 2] - p[0*4 + 2],
+                u.y*p[2*4 + 0]-p[1*4 + 0],u.y*p[2*4 + 1]-p[1*4 + 1],u.y*p[2*4 + 2]-p[1*4 + 2],
+                u1.x*p1[2*4 + 0]-p1[0*4 + 0],u1.x*p1[2*4 + 1]-p1[0*4 + 1],u1.x*p1[2*4 + 2]-p1[0*4 + 2],
+                u1.y*p1[2*4 + 0]-p1[1*4 + 0], u1.y*p1[2*4 + 1]-p1[1*4 + 1],u1.y*p1[2*4 + 2]-p1[1*4 + 2]
+        });
+
+        Mat B = new Mat(3, 1, CvType.CV_64F);
+        B.put(0,0, new double[]{
+                -(u.x * p[2*4 + 3] - p[0*4+3]),
+                -(u.y * p[2*4+3] - p[1*4+3]),
+                -(u1.x *p1[2*4+3] - p1[0*4+3]),
+                -(u1.y *p1[2*4+3] - p1[1*4+3])
+        });
+
+        /* From textbook:
+        //build B vector
+        Matx41d B(-(u.x*P(2,3)-P(0,3)),
+                -(u.y*P(2,3)-P(1,3)),
+                -(u1.x*P1(2,3)-P1(0,3)),
+                -(u1.y*P1(2,3)-P1(1,3)));
+        */
+        /*
+         Matx43d A(u.x*p.get(2,0)-p(0,0),u.x*p(2,1)-p(0,1),u.x*p(2,2)-p(0,2),
+u.y*p(2,0)-p(1,0),u.y*p(2,1)-p(1,1),u.y*p(2,2)-p(1,2),
+u1.x*p1(2,0)-p1(0,0), u1.x*p1(2,1)-p1(0,1),u1.x*P1(2,2)-P1(0,2),
+u1.y*P1(2,0)-P1(1,0), u1.y*P1(2,1)-P1(1,1),u1.y*P1(2,2)-P1(1,2)
+ );
+
+
+         */
+        Mat X = new Mat();
+        Core.solve(A, B, X, Core.DECOMP_SVD);
+
+        /* ToDo: Check Valid Rotation as they do in the textbook */
+        return X;
+    }
+
+    double Triangulate(List<KeyPoint> pt_set1, List<KeyPoint> pt_set2, Mat K, Mat Kinv, Mat P, Mat P1, foundFeatures ff){
+
+        double rep_error_sum = 0;
+        for(int i=0; i < pt_set1.size(); i++){
+            Point kp = pt_set1.get(i).pt;
+            Point3 u = new Point3(kp.x,kp.y,1.0);
+            Mat umat = new Mat(3, 1, CvType.CV_64F);
+            umat.put(0,0, new double[]{kp.x,kp.y,1.0});
+
+            /* um = Kinv u*/
+            Mat um = new Mat();
+            mult(Kinv, umat, um);
+            double[] uarr = new double[3];
+            um.get(0,0,uarr);
+
+            Point kp1 = pt_set2.get(i).pt;
+
+            Point3 u1 = new Point3(kp1.x,kp1.y,1.0);
+            Mat u1mat = new Mat(3,1, CvType.CV_64F);
+            u1mat.put(0,0, new double[]{kp1.x,kp1.y,1.0});
+
+
+            Mat um1 = new Mat();
+            mult(Kinv, u1mat, um1);
+            double[] u1arr = new double[3];
+            um1.get(0,0,u1arr);
+
+            Mat X = LinearLSTTriangulation(
+                    new Point3(uarr[0],uarr[1],uarr[2]), P,
+                    new Point3(u1arr[0],u1arr[1],u1arr[2]), P1
+            );
+            /* calculate the reprojection error */
+
+            Mat xPt_img = new Mat();
+            Mat d = new Mat();
+            mult(K, P1, d);
+            mult(d, X, xPt_img);
+            double [] xPt_imgarr = xPt_img.get(0,0);
+
+            xPt_imgarr[0] /= xPt_imgarr[2];
+            xPt_imgarr[1] /= xPt_imgarr[2];
+
+            xPt_img.put(0,0,xPt_imgarr);
+            rep_error_sum += (Core.norm(xPt_img));
+
+            /* Add point to cloud */
+        }
+        /* Return the mean reprojection error */
+        return rep_error_sum / pt_set1.size();
+    }
+
+    /*
+    double TriangulatePoints(
+const vector<KeyPoint>& pt_set1,
+const vector<KeyPoint>& pt_set2,
+const Mat&Kinv,
+const Matx34d& P,
+const Matx34d& P1,
+vector<Point3d>& pointcloud)
+{
+vector<double> reproj_error;
+for (unsigned int i=0; i<pts_size; i++) {
+ //convert to normalized homogeneous coordinates
+ Point2f kp = pt_set1[i].pt;
+ Point3d u(kp.x,kp.y,1.0);
+ Mat_<double> um = Kinv * Mat_<double>(u);
+ u = um.at<Point3d>(0);
+ Point2f kp1 = pt_set2[i].pt;
+ Point3d u1(kp1.x,kp1.y,1.0);
+ Mat_<double> um1 = Kinv * Mat_<double>(u1);
+ u1 = um1.at<Point3d>(0);
+
+ //triangulate
+ Mat_<double> X = LinearLSTriangulation(u,P,u1,P1);
+
+ //calculate reprojection error
+ Mat_<double> xPt_img = K * Mat(P1) * X;
+ Point2f xPt_img_(xPt_img(0)/xPt_img(2),xPt_img(1)/xPt_img(2));
+ reproj_error.push_back(norm(xPt_img_-kp1));
+ //store 3D point
+ pointcloud.push_back(Point3d(X(0),X(1),X(2)));
+}
+//return mean reprojection error
+Scalar me = mean(reproj_error);
+return me[0];
+}
+
+     */
+
 
 
 
