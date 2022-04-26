@@ -39,32 +39,6 @@ public class Sfm {
     TextView tv;
     Context ctx;
 
-
-
-    /*
-
-    Write mat debugger.
-
-~ PART 1: matching features ~
-
-List Of Mat ------> * Gey Key Points *
-------> Match key points between one and the next.
-Returns Array of: MatOfDMatch
-
-
-~ PART 2: Find Fundamental and essential matrix ~
-Between one and the next: Calib3d.findFundamentalMat
-
-
-~ PART 3: SVD to get rotation and translation ~
-
-
-~ PART 4: Check if the rotation is coherent ~
-
-Function interface FindCameraMatrices: Ask for K and two images, returns P1 matrix and whether is valid.
-
-     */
-
     public void init(Context ctxg, LinearLayout consoleg, LinearLayout picoutg){
         console = consoleg;
         ctx = ctxg;
@@ -72,6 +46,19 @@ Function interface FindCameraMatrices: Ask for K and two images, returns P1 matr
         picout = picoutg;
         console.addView(tv);
     }
+
+    /*
+1  2  3  4  5
+P->P->P->P         Features
+   P->P->P->P
+
+
+1) Make a view -> feature look up.
+2) For each view, get earliest common feature among the features. Exclude those that start now.
+Alternate between 3) and 4):
+3) Triangulate -> Do it wrt. The earliest common feature's camera position.
+4)
+     */
 
     // https://stackoverflow.com/questions/46153260/getting-error-while-using-findfundamentalmat-in-android-opencv-and-not-able-to-r
 
@@ -115,26 +102,110 @@ Function interface FindCameraMatrices: Ask for K and two images, returns P1 matr
         /*
             Concatenate to make P1. (test if hconcat works)
 
+            P1 is the base case for the PnP / triangulation iteration, the second frame's camera.
+
            P1( R(0,0),R(0,1), R(0,2), t(0),
                 R(1,0),R(1,1), R(1,2), t(1),
                 R(2,0),R(2,1), R(2,2), t(2));
         */
+
         ArrayList<Mat> d2 = new ArrayList<>();
         d2.add(R);
         d2.add(t);
         Core.hconcat(d2, P1);
+
+        /* Make a view-> feature lookup, with earliest common view */
+        // i: img index. v: feature is present table.
+        ArrayList<Hashtable<feature, Integer>> VFlookup = new ArrayList<>();
+        /* i: img index, v: view*/
+        ArrayList<Integer> eCF = new ArrayList<>();
+
+        for(int i = 0; i < frames.size(); i++){
+            /* featList: list of features which will be used for triangulation */
+            /* and their key point's respective location */
+            Hashtable<feature, Integer> featList = new Hashtable<>();
+            int min = -1;
+            for(feature feat : ff){
+                int firstFrameOfFeature = feat.imgIndexStart;
+                /* If the feature is on the screen currently */
+                /* And if the feature is not currently starting */
+                if(i > firstFrameOfFeature && i < feat.consecutiveMatches.size() + feat.imgIndexStart){
+                    if(0<min || min>firstFrameOfFeature){
+                        min = firstFrameOfFeature;
+                    }
+                    featList.put(feat, i - firstFrameOfFeature);
+                }
+            }
+            /* Add view->feature lookup. */
+            VFlookup.add(featList);
+            /* Add the earliest common frame among features*/
+            eCF.add(min);
+        }
+
+        /* Initialize a camera position list */
+        /* New positions are gotten with solvePnP */
+        /* First position is the unity matrix, because the scene is referenced from the first frame */
+
+
+        Mat P0 = new Mat(3, 4,CvType.CV_64F);
+        P0.put(0,0,new double[]{
+                1, 0, 0, 0,
+                0, 1, 0, 0,
+                0, 0, 1, 0
+        });
+
+
+        /* Second position comes from previously (P1) */
+
+        ArrayList<Mat> cameraPositionList = new ArrayList<>();
+        cameraPositionList.add(P0);
+        cameraPositionList.add(P1);
+
+        /* Now, we alternately triangulate and solvePnP to build the scene. */
+
+        /* Initially, we triangulate on the (second frame) */
+        /* Then, from the third frame on, we 1) PnP to get cam. pos., 2) triangulate */
+        /* This invites the creation of a method, which we call triangulate wrapper */
+
+        /*
+
+        TRIANGULATE
+        - inputs: current frame's feature list.
+        - modifies: sets a feature's 3d point.
+        algorithm: turn feature list into PointArray. (BuildPointArray),
+            call the actual Triangulate.
+
+
+            1) Get 2d points from feature list.
+            2) Call Triangulate.
+
+        PNP (called before triangulate)
+        - make (3d point, current feature point) array
+        - filter frame's features that have a 3d point
+
+
+         */
+
     }
 
     //https://akshikawijesundara.medium.com/object-recognition-with-opencv-on-android-6435277ab285
 
-
-
-
     static class feature {
-        Point3 worldPoint;
+        Mat worldPoint;
+        private boolean isSetWorldPoint;
+
         int imgIndexStart;
         LinkedList<Integer> consecutiveMatches;
         int lastMatch;
+
+        public boolean isSetWorldPoint(){
+            return isSetWorldPoint;
+        }
+
+        public void setWorldPoint(Mat wp){
+            isSetWorldPoint = true;
+            worldPoint = wp;
+        }
     }
 
     static class foundFeatures extends ArrayList<feature> {
@@ -329,6 +400,8 @@ u1.y*P1(2,0)-P1(1,0), u1.y*P1(2,1)-P1(1,1),u1.y*P1(2,2)-P1(1,2)
             rep_error_sum += (Core.norm(xPt_img));
 
             /* Add point to cloud */
+
+            /* AKA: put X in its feature associated with "i" */
         }
         /* Return the mean reprojection error */
         return rep_error_sum / pt_set1.size();
